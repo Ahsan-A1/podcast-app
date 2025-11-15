@@ -3,8 +3,9 @@ Command-line interface for the podcast downloader.
 """
 from typing import Optional
 import sys
-from .downloader import PodcastDownloader
-from .feed_finder import PodcastFeedFinder
+
+from podcast.itunes import PodcastFeedFinder, PodcastDownloader
+
 
 def print_progress(progress: float):
     """Print download progress."""
