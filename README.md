@@ -35,14 +35,14 @@ python -m podcast
 ### As a Python Package
 
 ```python
-from podcast import PodcastDownloader, PodcastFeedFinder
+from podcast import Downloader, PodcastFeedFinder
 
 # Search for podcasts
 finder = PodcastFeedFinder()
 results = finder.search_podcast("Python Bytes")
 
 # Get episodes from a podcast
-downloader = PodcastDownloader()
+downloader = Downloader()
 episodes = downloader.get_feed(results[0]['feed_url'])
 
 # Download an episode

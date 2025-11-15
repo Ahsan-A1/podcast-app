@@ -1,12 +1,14 @@
 import hashlib
 import time
+from typing import List, Any, Dict
 
 import requests
 
+from podcast.api.feed_finder import FeedFinder
 from podcast.secrets import PODCAST_INDEX_API_KEY, PODCAST_INDEX_API_SECRET, PODCAST_INDEX_BASE_URL
 
 
-class PodcastIndex:
+class PodcastIndex(FeedFinder):
     def __init__(self):
         self.api_key = PODCAST_INDEX_API_KEY
         self.api_secret = PODCAST_INDEX_API_SECRET
@@ -23,11 +25,24 @@ class PodcastIndex:
             'User-Agent': 'postcasting-index-python-cli'
         }
 
-    def search_podcasts(self, query: str):
+    def search_podcasts(self, query: str) -> List[Dict[str, Any]]:
         url = f"{self.base_url}search/byterm"
         params = {"q": query}
         response = requests.get(url, headers=self.get_headers(), params=params)
-        return response.json()
+        res = response.json()
+        feeds = res.get("feeds", [])
+        podcasts = []
+        for feed in feeds:
+            podcast = {
+                'id': str(feed.get('podcastGuid', 0)),
+                'name': feed.get('title', 'Unknown'),
+                'artist': feed.get('author', 'Unknown'),
+                'feed_url': feed['url'],
+                'artwork_url': feed.get('artwork', ''),
+                'genre': feed.get('categories', {}).values()
+            }
+            podcasts.append(podcast)
+        return podcasts
 
     def get_podcast_by_id(self, podcast_id: int):
         url = f"{self.base_url}podcasts/byid"

@@ -4,7 +4,10 @@ Command-line interface for the podcast downloader.
 from typing import Optional
 import sys
 
-from podcast.itunes import PodcastFeedFinder, PodcastDownloader
+from podcast.api.feed_finder import FeedFinder
+from podcast.api.impl.itunes import Itunes
+from podcast.api.impl.podcast_index import PodcastIndex
+from podcast.service.downloader import Downloader
 
 
 def print_progress(progress: float):
@@ -44,18 +47,22 @@ def select_from_list(items: list, prompt: str) -> Optional[int]:
 
 def main():
     """Main entry point for the podcast downloader."""
-    finder = PodcastFeedFinder()
-    downloader = PodcastDownloader()
+    # finder: FeedFinder = Itunes()
+    finder: FeedFinder = PodcastIndex()
+    downloader = Downloader()
 
-    # Get search query
-    query = input("Enter podcast name to search: ").strip()
+    query = None
+    query = "The rest is politics"
+    if not query:
+        query = input("Enter podcast name to search: ").strip()
+
     if not query:
         print("Search query cannot be empty")
         return
 
     # Search for podcasts
     print("\nSearching for podcasts...")
-    results = finder.search_podcast(query)
+    results = finder.search_podcasts(query)
 
     if not results:
         print("No podcasts found!")

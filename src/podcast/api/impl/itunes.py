@@ -1,17 +1,21 @@
 """
 Module for finding podcast RSS feeds using iTunes API.
 """
-from typing import List, Dict
+from typing import List, Dict, Any
 import requests
 from urllib.parse import quote
 
-class PodcastFeedFinder:
+from podcast.api.feed_finder import FeedFinder
+from podcast.secrets import ITUNES_BASE_URL
+
+
+class Itunes(FeedFinder):
     """Class to search and find podcast RSS feeds using iTunes API."""
 
     def __init__(self):
-        self.search_url = "https://itunes.apple.com/search"
+        self.search_url = ITUNES_BASE_URL
 
-    def search_podcast(self, query: str) -> List[Dict]:
+    def search_podcasts(self, query: str) -> List[Dict[str, Any]]:
         """
         Search for podcasts and return their RSS feeds.
 
@@ -36,7 +40,7 @@ class PodcastFeedFinder:
         }
 
         try:
-            response = requests.get(self.search_url, params=params, timeout=10)
+            response = requests.get(f"{self.search_url}/search", params=params, timeout=10)
             response.raise_for_status()
             results = response.json()
 
@@ -46,11 +50,12 @@ class PodcastFeedFinder:
                     continue
 
                 podcast = {
+                    'id': str(item.get('artistId', 0)),
                     'name': item.get('collectionName', 'Unknown'),
                     'artist': item.get('artistName', 'Unknown'),
                     'feed_url': item['feedUrl'],
                     'artwork_url': item.get('artworkUrl600', ''),
-                    'genre': item.get('primaryGenreName', 'Unknown')
+                    'genre': item.get('primaryGenreName', [])
                 }
                 podcasts.append(podcast)
 

@@ -7,12 +7,12 @@ from typing import List, Dict, Optional
 import requests
 import feedparser
 
-class PodcastDownloader:
+class Downloader:
     """Class to handle podcast feed parsing and episode downloading."""
 
     def __init__(self, download_dir: str = "downloads"):
         """
-        Initialize the PodcastDownloader.
+        Initialize the Downloader.
 
         Args:
             download_dir (str): Directory to store downloaded episodes
