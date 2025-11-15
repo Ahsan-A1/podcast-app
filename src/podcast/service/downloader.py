@@ -33,7 +33,12 @@ class Downloader:
             Path: Path to the downloaded file, or None if download failed
         """
         try:
-            response = requests.get(url, stream=True)
+            print(f"Starting download from: {url}")
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+
+            response = requests.get(url, headers=headers,stream=True)
             response.raise_for_status()
 
             file_path = self.download_dir / self._sanitize_filename(filename)

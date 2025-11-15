@@ -53,6 +53,8 @@ def main():
 
     query = None
     query = "The rest is politics"
+    query = "Empire"
+    # query = "The news agents"
     if not query:
         query = input("Enter podcast name to search: ").strip()
 
